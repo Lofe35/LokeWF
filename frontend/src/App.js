@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import HeroSection from './components/HeroSection';
-import AboutSection from './components/AboutSection';
-import PracticumISection from './components/PracticumISection';
-import PracticumIISection from './components/PracticumIISection';
-import GallerySection from './components/GallerySection';
-import ContactSection from './components/ContactSection';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Navigation from './components/Navigation';
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import PracticumIPage from './pages/PracticumIPage';
+import PracticumIIPage from './pages/PracticumIIPage';
+import GalleryPage from './pages/GalleryPage';
 import Lenis from '@studio-freight/lenis';
 
 function App() {
@@ -34,12 +35,16 @@ function App() {
 
   return (
     <div className="App">
-      <HeroSection />
-      <AboutSection />
-      <PracticumISection />
-      <PracticumIISection />
-      <GallerySection />
-      <ContactSection />
+      <BrowserRouter>
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/practicum-i" element={<PracticumIPage />} />
+          <Route path="/practicum-ii" element={<PracticumIIPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

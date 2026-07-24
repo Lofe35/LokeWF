@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,20 +16,12 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setIsMobileMenuOpen(false);
-    }
-  };
-
   const navItems = [
-    { label: 'Home', id: 'hero' },
-    { label: 'About', id: 'about' },
-    { label: 'Practicum I', id: 'practicum-i' },
-    { label: 'Practicum II', id: 'practicum-ii' },
-    { label: 'Gallery', id: 'gallery' },
+    { label: 'Home', path: '/' },
+    { label: 'About', path: '/about' },
+    { label: 'Practicum I', path: '/practicum-i' },
+    { label: 'Practicum II', path: '/practicum-ii' },
+    { label: 'Gallery', path: '/gallery' },
   ];
 
   return (
@@ -46,29 +40,32 @@ const Navigation = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-10 py-6">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <motion.button
-              onClick={() => scrollToSection('hero')}
-              className="font-display font-black text-2xl md:text-3xl tracking-tight"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              LW<span className="text-ochre">.</span>
-            </motion.button>
+            <Link to="/">
+              <motion.div
+                className="font-display font-black text-2xl md:text-3xl tracking-tight cursor-pointer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                LW<span className="text-ochre">.</span>
+              </motion.div>
+            </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8 lg:gap-12">
               {navItems.map((item, index) => (
-                <motion.button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className="font-body text-sm lg:text-base font-medium uppercase tracking-widest text-quiet hover:text-ochre transition-colors"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                  whileHover={{ y: -2 }}
-                >
-                  {item.label}
-                </motion.button>
+                <Link key={item.path} to={item.path}>
+                  <motion.div
+                    className={`font-body text-sm lg:text-base font-medium uppercase tracking-widest transition-colors ${
+                      location.pathname === item.path ? 'text-ochre' : 'text-quiet hover:text-ochre'
+                    }`}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                    whileHover={{ y: -2 }}
+                  >
+                    {item.label}
+                  </motion.div>
+                </Link>
               ))}
             </div>
 
@@ -95,16 +92,18 @@ const Navigation = () => {
           >
             <div className="flex flex-col gap-6 p-8">
               {navItems.map((item, index) => (
-                <motion.button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className="font-body text-lg font-medium uppercase tracking-widest text-quiet hover:text-ochre transition-colors text-left"
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  {item.label}
-                </motion.button>
+                <Link key={item.path} to={item.path} onClick={() => setIsMobileMenuOpen(false)}>
+                  <motion.div
+                    className={`font-body text-lg font-medium uppercase tracking-widest transition-colors text-left ${
+                      location.pathname === item.path ? 'text-ochre' : 'text-quiet hover:text-ochre'
+                    }`}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    {item.label}
+                  </motion.div>
+                </Link>
               ))}
             </div>
           </motion.div>
