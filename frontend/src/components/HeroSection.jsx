@@ -1,0 +1,319 @@
+import React, { useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import Navigation from './Navigation';
+import * as THREE from 'three';
+
+const HeroSection = () => {
+  const sectionRef = useRef(null);
+  const canvasRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.3]);
+
+  // Three.js 3D Legal Seal
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvasRef.current,
+      alpha: true,
+      antialias: true,
+    });
+
+    const size = Math.min(window.innerWidth * 0.4, 400);
+    renderer.setSize(size, size);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    camera.position.z = 8;
+
+    // Create torus knot (legal seal inspired)
+    const geometry = new THREE.TorusKnotGeometry(1.5, 0.4, 128, 32, 2, 3);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xcf5b1d,
+      emissive: 0x8f3f12,
+      shininess: 100,
+      wireframe: false,
+    });
+    const torusKnot = new THREE.Mesh(geometry, material);
+    scene.add(torusKnot);
+
+    // Wireframe companion
+    const wireframeGeometry = new THREE.TorusKnotGeometry(1.8, 0.3, 64, 16, 2, 3);
+    const wireframeMaterial = new THREE.MeshBasicMaterial({
+      color: 0x7774e7,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.3,
+    });
+    const wireframe = new THREE.Mesh(wireframeGeometry, wireframeMaterial);
+    scene.add(wireframe);
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    const pointLight = new THREE.PointLight(0x7774e7, 1);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
+
+    let animationId;
+    const animate = () => {
+      animationId = requestAnimationFrame(animate);
+      torusKnot.rotation.x += 0.003;
+      torusKnot.rotation.y += 0.005;
+      wireframe.rotation.x -= 0.002;
+      wireframe.rotation.y -= 0.003;
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      geometry.dispose();
+      material.dispose();
+      wireframeGeometry.dispose();
+      wireframeMaterial.dispose();
+      renderer.dispose();
+    };
+  }, []);
+
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <section
+      ref={sectionRef}
+      id="hero"
+      className="relative min-h-screen flex flex-col overflow-hidden"
+      style={{ background: 'var(--paper)' }}
+    >
+      <Navigation />
+
+      <motion.div
+        style={{ y, opacity }}
+        className="flex-1 flex flex-col items-center justify-center px-6 md:px-10 relative z-10"
+      >
+        {/* Eyebrow */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="font-body text-xs md:text-sm uppercase tracking-widest text-quiet mb-6 md:mb-8"
+        >
+          Loke Wei Feng · Bachelor of Law with Honours · Malaysia
+        </motion.div>
+
+        {/* Main Heading with Masked Reveal */}
+        <div className="overflow-hidden mb-8 md:mb-12">
+          <motion.h1
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 0.5, duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
+            className="font-display font-light text-5xl md:text-7xl lg:text-8xl xl:text-9xl text-center leading-none tracking-tight"
+            style={{ color: 'var(--ink)' }}
+          >
+            A legal education,
+          </motion.h1>
+        </div>
+
+        <div className="overflow-hidden mb-8 md:mb-12">
+          <motion.h1
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 0.7, duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
+            className="font-display font-black text-5xl md:text-7xl lg:text-8xl xl:text-9xl text-center leading-none tracking-tight italic"
+            style={{ color: 'var(--ochre)' }}
+          >
+            in practice.
+          </motion.h1>
+        </div>
+
+        {/* Supporting Copy */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.8 }}
+          className="font-body text-base md:text-lg lg:text-xl text-center max-w-2xl text-quiet leading-relaxed mb-10 md:mb-12"
+        >
+          An e-portfolio documenting my Practicum I journey at Mahkamah Tinggi Muar, with Practicum II to follow.
+        </motion.p>
+
+        {/* CTA Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="flex flex-col sm:flex-row gap-4 md:gap-6"
+        >
+          <motion.button
+            onClick={() => scrollToSection('practicum-i')}
+            className="px-8 py-4 bg-midnight text-paper font-body font-medium uppercase tracking-widest text-sm rounded-none hover:bg-ochre transition-colors duration-300"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            Read the journal
+          </motion.button>
+          <motion.button
+            onClick={() => scrollToSection('about')}
+            className="px-8 py-4 border-2 border-midnight text-midnight font-body font-medium uppercase tracking-widest text-sm rounded-none hover:bg-midnight hover:text-paper transition-all duration-300"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            About me
+          </motion.button>
+        </motion.div>
+
+        {/* 3D Legal Seal */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, rotateY: -30 }}
+          animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+          transition={{ delay: 1.4, duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
+          className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 hidden lg:block"
+        >
+          <canvas ref={canvasRef} className="drop-shadow-2xl" />
+        </motion.div>
+
+        {/* Scroll Hint */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 1 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20"
+        >
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+            className="w-6 h-10 border-2 rounded-full flex items-start justify-center p-2"
+            style={{ borderColor: 'var(--ochre)' }}
+          >
+            <motion.div
+              animate={{ y: [0, 12, 0] }}
+              transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+              className="w-1 h-3 rounded-full"
+              style={{ background: 'var(--ochre)' }}
+            />
+          </motion.div>
+        </motion.div>
+      </motion.div>
+
+      {/* Home Intro Band */}
+      <div className="py-20 md:py-32 px-6 md:px-10 relative z-20" style={{ background: 'var(--paper)' }}>
+        <div className="max-w-6xl mx-auto text-center mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="font-body text-xs uppercase tracking-widest text-quiet mb-8">
+              The record
+            </div>
+            <p
+              className="font-display font-light text-3xl md:text-4xl lg:text-5xl leading-relaxed max-w-4xl mx-auto"
+              style={{ color: 'var(--ink)' }}
+            >
+              A considered archive of court experience, legal learning and the daily work that brought the classroom into focus.
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Practicum Overview Cards */}
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Practicum I Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            whileHover={{ y: -8, transition: { duration: 0.3 } }}
+            onClick={() => {
+              const element = document.getElementById('practicum-i');
+              if (element) element.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="relative p-10 md:p-12 rounded-lg cursor-pointer group overflow-hidden"
+            style={{ background: 'var(--midnight)' }}
+          >
+            <div className="relative z-10">
+              <div className="font-body text-xs uppercase tracking-widest mb-4" style={{ color: 'var(--lilac)' }}>
+                01 · August 2026
+              </div>
+              <h3 className="font-display font-black text-4xl md:text-5xl mb-4" style={{ color: 'var(--paper)' }}>
+                Practicum I
+              </h3>
+              <p className="font-body text-lg leading-relaxed mb-8" style={{ color: 'var(--lilac)' }}>
+                Four weeks at Mahkamah Tinggi Muar, from 3 August to 27 August 2026.
+              </p>
+              <div className="flex items-center gap-2 font-body font-medium uppercase tracking-widest text-sm" style={{ color: 'var(--ochre)' }}>
+                Week 1—4 
+                <motion.span
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                >
+                  →
+                </motion.span>
+              </div>
+            </div>
+            {/* Hover Effect */}
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
+              style={{ background: 'var(--ochre)' }}
+            />
+          </motion.div>
+
+          {/* Practicum II Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            whileHover={{ y: -8, transition: { duration: 0.3 } }}
+            onClick={() => {
+              const element = document.getElementById('practicum-ii');
+              if (element) element.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="relative p-10 md:p-12 rounded-lg cursor-pointer group overflow-hidden"
+            style={{ background: 'var(--lilac)' }}
+          >
+            <div className="relative z-10">
+              <div className="font-body text-xs uppercase tracking-widest text-quiet mb-4">
+                02 · Not yet conducted
+              </div>
+              <h3 className="font-display font-black text-4xl md:text-5xl mb-4" style={{ color: 'var(--ink)' }}>
+                Practicum II
+              </h3>
+              <p className="font-body text-lg leading-relaxed text-quiet mb-8">
+                An eight-week chapter that will be documented after the practicum takes place.
+              </p>
+              <div className="flex items-center gap-2 font-body font-medium uppercase tracking-widest text-sm" style={{ color: 'var(--electric)' }}>
+                Week 1—8 
+                <motion.span
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                >
+                  →
+                </motion.span>
+              </div>
+            </div>
+            {/* Hover Effect */}
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
+              style={{ background: 'var(--electric)' }}
+            />
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default HeroSection;
