@@ -1,15 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,900;1,9..144,300;1,9..144,900&family=Newsreader:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --paper: #f4f0e6;
-  --ink: #1c1a17;
+  --paper: #faf7f2;
+  --beige: #f5ebe0;
+  --light-orange: #ffd7ba;
+  --orange: #f4a460;
+  --dark-orange: #d97642;
+  --ink: #2c2416;
   --ochre: #cf5b1d;
   --ochre-dark: #8f3f12;
-  --midnight: #121b35;
-  --electric: #7774e7;
-  --lilac: #d9d4ff;
-  --rule: #cfc7b3;
-  --quiet: #756e62;
+  --rule: #e8dcc8;
+  --quiet: #8b7d6b;
 }
 
 * {

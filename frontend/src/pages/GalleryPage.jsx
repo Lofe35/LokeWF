@@ -41,7 +41,14 @@ const GalleryPage = () => {
     <>
       <section
         className="relative py-32 md:py-48 px-6 md:px-10 min-h-screen"
-        style={{ background: 'var(--midnight)', paddingTop: '120px' }}
+        style={{ 
+          background: 'var(--beige)',
+          backgroundImage: 'linear-gradient(rgba(250, 247, 242, 0.95), rgba(250, 247, 242, 0.95)), url(https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&q=80)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          paddingTop: '120px'
+        }}
       >
         {/* Header */}
         <div className="max-w-6xl mx-auto mb-16 md:mb-24 text-center">
@@ -50,12 +57,12 @@ const GalleryPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="font-body text-xs uppercase tracking-widest mb-4" style={{ color: 'var(--lilac)' }}>
+            <div className="font-body text-xs uppercase tracking-widest mb-4 text-quiet">
               04 · Gallery
             </div>
             <h2
               className="font-display font-black text-5xl md:text-7xl lg:text-8xl leading-none tracking-tight mb-6"
-              style={{ color: 'var(--paper)' }}
+              style={{ color: 'var(--ink)' }}
             >
               A visual record
             </h2>
@@ -65,7 +72,7 @@ const GalleryPage = () => {
             >
               of the work.
             </h2>
-            <p className="font-body text-lg md:text-xl leading-relaxed max-w-3xl mx-auto" style={{ color: 'var(--lilac)' }}>
+            <p className="font-body text-lg md:text-xl leading-relaxed max-w-3xl mx-auto text-quiet">
               Add photographs of the court, your workspace, team activities and important practicum moments here.
             </p>
           </motion.div>
@@ -81,8 +88,12 @@ const GalleryPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className="group relative aspect-[4/3] rounded-lg overflow-hidden cursor-pointer"
-                style={{ background: 'var(--paper)' }}
+                className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-lg"
+                style={{ 
+                  background: 'linear-gradient(135deg, rgba(255, 215, 186, 0.3) 0%, rgba(245, 235, 224, 0.5) 100%)',
+                  backdropFilter: 'blur(10px)',
+                  border: '2px solid rgba(207, 91, 29, 0.2)',
+                }}
               >
                 {/* Placeholder Content */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-8 transition-all duration-500">
@@ -94,7 +105,7 @@ const GalleryPage = () => {
                       size={64}
                       strokeWidth={1.5}
                       style={{ color: 'var(--ochre)' }}
-                      className="mb-6 opacity-60 group-hover:opacity-100 transition-opacity"
+                      className="mb-6 opacity-70 group-hover:opacity-100 transition-opacity"
                     />
                   </motion.div>
                   <h3
@@ -103,16 +114,10 @@ const GalleryPage = () => {
                   >
                     {item.title}
                   </h3>
-                  <p className="font-body text-sm text-center opacity-60">
+                  <p className="font-body text-sm text-center text-quiet">
                     {item.description}
                   </p>
                 </div>
-
-                {/* Hover Border Effect */}
-                <div
-                  className="absolute inset-0 border-4 border-transparent group-hover:border-ochre transition-all duration-300 rounded-lg"
-                  style={{ borderColor: 'transparent' }}
-                />
               </motion.div>
             ))}
           </div>
@@ -124,13 +129,13 @@ const GalleryPage = () => {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="mt-16 text-center"
           >
-            <p className="font-body text-sm italic" style={{ color: 'var(--lilac)' }}>
+            <p className="font-body text-sm italic text-quiet">
               These are placeholder icons. You can replace them with your actual photographs.
             </p>
           </motion.div>
         </div>
       </section>
-      <ContactSection />
+      <ContactSection showMap={false} />
     </>
   );
 };

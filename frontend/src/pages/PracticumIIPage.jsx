@@ -18,12 +18,19 @@ const PracticumIIPage = () => {
     <>
       <section
         className="relative py-32 md:py-48 px-6 md:px-10 min-h-screen"
-        style={{ background: 'var(--paper)', paddingTop: '120px' }}
+        style={{ 
+          background: 'var(--beige)',
+          backgroundImage: 'linear-gradient(rgba(245, 235, 224, 0.92), rgba(245, 235, 224, 0.92)), url(https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=1200&q=80)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          paddingTop: '120px'
+        }}
       >
         {/* Decorative background glow */}
         <div
           className="absolute top-1/4 right-0 w-[500px] h-[500px] rounded-full opacity-10 blur-3xl"
-          style={{ background: 'radial-gradient(circle, var(--electric) 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, var(--orange) 0%, transparent 70%)' }}
         />
 
         {/* Header */}
@@ -59,7 +66,7 @@ const PracticumIIPage = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.3 }}
             className="absolute right-8 top-32 hidden lg:block font-display font-black text-9xl opacity-5"
-            style={{ color: 'var(--ink)' }}
+            style={{ color: 'var(--ochre)' }}
           >
             8<br />weeks
           </motion.div>
@@ -77,14 +84,18 @@ const PracticumIIPage = () => {
               <AccordionItem
                 key={weekIndex}
                 value={`week-${weekIndex}`}
-                className="border-2 rounded-lg overflow-hidden"
-                style={{ borderColor: 'var(--rule)', background: 'var(--paper)' }}
+                className="border-2 rounded-2xl overflow-hidden shadow-lg"
+                style={{ 
+                  borderColor: 'var(--orange)', 
+                  background: 'rgba(250, 247, 242, 0.95)',
+                  backdropFilter: 'blur(10px)',
+                }}
               >
                 <AccordionTrigger className="px-6 md:px-8 py-6 hover:no-underline">
                   <div className="flex items-center gap-6">
                     <span
                       className="font-display font-black text-4xl md:text-5xl"
-                      style={{ color: 'var(--electric)' }}
+                      style={{ color: 'var(--orange)' }}
                     >
                       {String(weekIndex + 1).padStart(2, '0')}
                     </span>
@@ -105,8 +116,8 @@ const PracticumIIPage = () => {
                           {day}
                         </div>
                         <div
-                          className="font-body text-base leading-relaxed p-4 rounded"
-                          style={{ background: 'var(--lilac)/20', color: 'var(--quiet)' }}
+                          className="font-body text-base leading-relaxed p-4 rounded-lg"
+                          style={{ background: 'rgba(255, 215, 186, 0.3)', color: 'var(--quiet)' }}
                         >
                           <em>[Write what you did, what you learned, and any important reflection here.]</em>
                         </div>
@@ -119,7 +130,7 @@ const PracticumIIPage = () => {
           </Accordion>
         </motion.div>
       </section>
-      <ContactSection />
+      <ContactSection showMap={false} />
     </>
   );
 };

@@ -17,12 +17,19 @@ const AboutPage = () => {
       <section
         ref={targetRef}
         className="relative py-32 md:py-48 px-6 md:px-10 overflow-hidden min-h-screen"
-        style={{ background: 'var(--paper)', paddingTop: '120px' }}
+        style={{ 
+          background: 'var(--beige)',
+          backgroundImage: 'linear-gradient(rgba(245, 235, 224, 0.95), rgba(245, 235, 224, 0.95)), url(https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=1200&q=80)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          paddingTop: '120px'
+        }}
       >
         {/* Decorative background glow */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-20 blur-3xl"
-          style={{ background: 'radial-gradient(circle, var(--lilac) 0%, transparent 70%)' }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10 blur-3xl"
+          style={{ background: 'radial-gradient(circle, var(--light-orange) 0%, transparent 70%)' }}
         />
 
         {/* Section Label */}
@@ -71,8 +78,8 @@ const AboutPage = () => {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="font-body text-lg md:text-xl leading-relaxed text-center text-quiet"
             >
-              This e-portfolio records my Practicum I and Practicum II experience. I completed <span className="font-medium text-ink">Practicum I at Mahkamah Tinggi Muar, Malaysia</span>, from <span className="font-medium text-ink">3 August 2026 until 27 August 2026</span>. I was placed under{' '}
-              <span className="inline-block px-3 py-1 bg-lilac/30 font-medium text-ink">
+              This e-portfolio records my Practicum I and Practicum II experience. I completed <span className="font-medium text-ink">Practicum I at Mahkamah Tinggi Muar, Malaysia</span>, from <span className="font-medium text-ink">3 August 2026 until 28 August 2026</span>. I was placed under{' '}
+              <span className="inline-block px-3 py-1 font-medium text-ink" style={{ background: 'rgba(255, 215, 186, 0.4)' }}>
                 [Add court division / officer here]
               </span>
               .
@@ -122,13 +129,13 @@ const AboutPage = () => {
 
         {/* Decorative number */}
         <motion.div
-          style={{ y: y1, opacity: 0.05, color: 'var(--ink)' }}
+          style={{ y: y1, opacity: 0.03, color: 'var(--ochre)' }}
           className="absolute -right-10 top-20 font-display font-black text-[20rem] leading-none pointer-events-none hidden xl:block"
         >
           01
         </motion.div>
       </section>
-      <ContactSection />
+      <ContactSection showMap={false} />
     </>
   );
 };

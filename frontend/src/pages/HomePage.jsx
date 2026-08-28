@@ -46,7 +46,7 @@ const HomePage = () => {
     // Wireframe companion
     const wireframeGeometry = new THREE.TorusKnotGeometry(1.8, 0.3, 64, 16, 2, 3);
     const wireframeMaterial = new THREE.MeshBasicMaterial({
-      color: 0x7774e7,
+      color: 0xf4a460,
       wireframe: true,
       transparent: true,
       opacity: 0.3,
@@ -57,7 +57,7 @@ const HomePage = () => {
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
-    const pointLight = new THREE.PointLight(0x7774e7, 1);
+    const pointLight = new THREE.PointLight(0xf4a460, 1);
     pointLight.position.set(5, 5, 5);
     scene.add(pointLight);
 
@@ -87,7 +87,10 @@ const HomePage = () => {
     <section
       ref={sectionRef}
       className="relative min-h-screen flex flex-col"
-      style={{ background: 'var(--paper)' }}
+      style={{ 
+        background: 'var(--paper)',
+        backgroundImage: 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZThlMGQwIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==)',
+      }}
     >
       <motion.div
         style={{ y, opacity }}
@@ -147,8 +150,9 @@ const HomePage = () => {
         >
           <Link to="/practicum-i">
             <motion.button
-              className="px-8 py-4 bg-midnight text-paper font-body font-medium uppercase tracking-widest text-sm rounded-none hover:bg-ochre transition-colors duration-300"
-              whileHover={{ scale: 1.05, y: -2 }}
+              className="px-8 py-4 font-body font-medium uppercase tracking-widest text-sm rounded-full hover:shadow-lg transition-all duration-300"
+              style={{ background: 'var(--ochre)', color: 'var(--paper)' }}
+              whileHover={{ scale: 1.05, y: -2, boxShadow: '0 10px 25px rgba(207, 91, 29, 0.3)' }}
               whileTap={{ scale: 0.98 }}
             >
               Read the journal
@@ -156,8 +160,9 @@ const HomePage = () => {
           </Link>
           <Link to="/about">
             <motion.button
-              className="px-8 py-4 border-2 border-midnight text-midnight font-body font-medium uppercase tracking-widest text-sm rounded-none hover:bg-midnight hover:text-paper transition-all duration-300"
-              whileHover={{ scale: 1.05, y: -2 }}
+              className="px-8 py-4 border-2 font-body font-medium uppercase tracking-widest text-sm rounded-full transition-all duration-300"
+              style={{ borderColor: 'var(--ochre)', color: 'var(--ochre)', background: 'transparent' }}
+              whileHover={{ scale: 1.05, y: -2, background: 'var(--ochre)', color: 'var(--paper)' }}
               whileTap={{ scale: 0.98 }}
             >
               About me
@@ -199,8 +204,30 @@ const HomePage = () => {
         </motion.div>
       </motion.div>
 
-      {/* Home Intro Band */}
-      <div className="py-20 md:py-32 px-6 md:px-10 relative z-20" style={{ background: 'var(--paper)' }}>
+      {/* Animated Transition Before Record Section */}
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.5, ease: 'easeInOut' }}
+        className="h-1 w-full"
+        style={{ 
+          background: 'linear-gradient(90deg, transparent 0%, var(--ochre) 50%, transparent 100%)',
+          transformOrigin: 'center',
+        }}
+      />
+
+      {/* Home Intro Band with Background */}
+      <div 
+        className="py-20 md:py-32 px-6 md:px-10 relative z-20" 
+        style={{ 
+          background: 'var(--beige)',
+          backgroundImage: 'linear-gradient(rgba(250, 247, 242, 0.92), rgba(250, 247, 242, 0.92)), url(https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&q=80)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+        }}
+      >
         <div className="max-w-6xl mx-auto text-center mb-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -208,15 +235,25 @@ const HomePage = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <div className="font-body text-xs uppercase tracking-widest text-quiet mb-8">
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="font-body text-xs uppercase tracking-widest text-quiet mb-8"
+            >
               The record
-            </div>
-            <p
+            </motion.div>
+            <motion.p
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, delay: 0.3 }}
               className="font-display font-light text-3xl md:text-4xl lg:text-5xl leading-relaxed max-w-4xl mx-auto"
               style={{ color: 'var(--ink)' }}
             >
               A considered archive of court experience, legal learning and the daily work that brought the classroom into focus.
-            </p>
+            </motion.p>
           </motion.div>
         </div>
 
@@ -225,23 +262,27 @@ const HomePage = () => {
           {/* Practicum I Card */}
           <Link to="/practicum-i">
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className="relative p-10 md:p-12 rounded-lg cursor-pointer group overflow-hidden"
-              style={{ background: 'var(--midnight)' }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              whileHover={{ y: -12, transition: { duration: 0.3 } }}
+              className="relative p-10 md:p-12 rounded-2xl cursor-pointer group overflow-hidden shadow-lg"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(244, 164, 96, 0.15) 0%, rgba(207, 91, 29, 0.15) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '2px solid rgba(207, 91, 29, 0.2)',
+              }}
             >
               <div className="relative z-10">
-                <div className="font-body text-xs uppercase tracking-widest mb-4" style={{ color: 'var(--lilac)' }}>
+                <div className="font-body text-xs uppercase tracking-widest mb-4 text-quiet">
                   01 · August 2026
                 </div>
-                <h3 className="font-display font-black text-4xl md:text-5xl mb-4" style={{ color: 'var(--paper)' }}>
+                <h3 className="font-display font-black text-4xl md:text-5xl mb-4" style={{ color: 'var(--ink)' }}>
                   Practicum I
                 </h3>
-                <p className="font-body text-lg leading-relaxed mb-8" style={{ color: 'var(--lilac)' }}>
-                  Four weeks at Mahkamah Tinggi Muar, from 3 August to 27 August 2026.
+                <p className="font-body text-lg leading-relaxed mb-8 text-quiet">
+                  Four weeks at Mahkamah Tinggi Muar, from 3 August to 28 August 2026.
                 </p>
                 <div className="flex items-center gap-2 font-body font-medium uppercase tracking-widest text-sm" style={{ color: 'var(--ochre)' }}>
                   Week 1—4 
@@ -263,13 +304,17 @@ const HomePage = () => {
           {/* Practicum II Card */}
           <Link to="/practicum-ii">
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className="relative p-10 md:p-12 rounded-lg cursor-pointer group overflow-hidden"
-              style={{ background: 'var(--lilac)' }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              whileHover={{ y: -12, transition: { duration: 0.3 } }}
+              className="relative p-10 md:p-12 rounded-2xl cursor-pointer group overflow-hidden shadow-lg"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(255, 215, 186, 0.4) 0%, rgba(245, 235, 224, 0.4) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '2px solid rgba(244, 164, 96, 0.3)',
+              }}
             >
               <div className="relative z-10">
                 <div className="font-body text-xs uppercase tracking-widest text-quiet mb-4">
@@ -281,7 +326,7 @@ const HomePage = () => {
                 <p className="font-body text-lg leading-relaxed text-quiet mb-8">
                   An eight-week chapter that will be documented after the practicum takes place.
                 </p>
-                <div className="flex items-center gap-2 font-body font-medium uppercase tracking-widest text-sm" style={{ color: 'var(--electric)' }}>
+                <div className="flex items-center gap-2 font-body font-medium uppercase tracking-widest text-sm" style={{ color: 'var(--orange)' }}>
                   Week 1—8 
                   <motion.span
                     animate={{ x: [0, 5, 0] }}
@@ -292,8 +337,8 @@ const HomePage = () => {
                 </div>
               </div>
               <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
-                style={{ background: 'var(--electric)' }}
+                className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
+                style={{ background: 'var(--orange)' }}
               />
             </motion.div>
           </Link>
