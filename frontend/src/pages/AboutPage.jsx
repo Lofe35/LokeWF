@@ -94,7 +94,7 @@ const AboutPage = () => {
                 }}
               >
                 <img 
-                  src="https://customer-assets-lqy194kg.emergentagent.net/job_mahkamah-experience/artifacts/i0lojaaj_image.png"
+                  src="https://customer-assets-lqy194kg.emergentagent.net/job_mahkamah-experience/artifacts/7vy87dvp_image.png"
                   alt="Loke Wei Feng - Professional Photo"
                   className="w-full h-auto object-cover"
                 />
