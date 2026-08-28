@@ -6,10 +6,10 @@ import ContactSection from '../components/ContactSection';
 
 const PracticumIPage = () => {
   const weeks = [
-    { week: 1, dates: '3—7 August 2026', theme: 'Orientation & First Impressions' },
-    { week: 2, dates: '10—14 August 2026', theme: 'Court Observations' },
-    { week: 3, dates: '17—21 August 2026', theme: 'Case Study & Research' },
-    { week: 4, dates: '24—28 August 2026', theme: 'Reflection & Conclusion' },
+    { week: 1, dates: '3—7 August 2026' },
+    { week: 2, dates: '10—14 August 2026' },
+    { week: 3, dates: '17—21 August 2026' },
+    { week: 4, dates: '24—28 August 2026' },
   ];
 
   return (
@@ -150,10 +150,10 @@ const PracticumIPage = () => {
                         </span>
                         <div>
                           <div className="font-body text-xs uppercase tracking-widest text-quiet mb-1">
-                            Week {weekData.week}
+                            Week
                           </div>
-                          <div className="font-display font-bold text-xl md:text-2xl" style={{ color: 'var(--ink)' }}>
-                            {weekData.theme}
+                          <div className="font-display font-bold text-2xl md:text-3xl" style={{ color: 'var(--ink)' }}>
+                            Week {weekData.week}
                           </div>
                         </div>
                       </div>

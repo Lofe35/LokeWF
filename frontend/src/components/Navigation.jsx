@@ -30,11 +30,12 @@ const Navigation = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled ? 'bg-paper/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500`}
         style={{
+          background: isScrolled ? 'rgba(250, 247, 242, 0.95)' : 'transparent',
+          backdropFilter: isScrolled ? 'blur(12px)' : 'none',
           borderBottom: isScrolled ? '1px solid var(--rule)' : 'none',
+          boxShadow: isScrolled ? '0 1px 3px rgba(0, 0, 0, 0.05)' : 'none',
         }}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-10 py-6">

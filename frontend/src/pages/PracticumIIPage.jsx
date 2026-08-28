@@ -7,7 +7,6 @@ import ContactSection from '../components/ContactSection';
 const PracticumIIPage = () => {
   const weeks = Array.from({ length: 8 }, (_, i) => ({
     week: i + 1,
-    theme: `Week ${i + 1} Practice`,
   }));
 
   return (

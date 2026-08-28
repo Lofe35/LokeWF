@@ -13,6 +13,20 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)'
       },
       colors: {
+        // Custom portfolio palette
+        paper: 'var(--paper)',
+        beige: 'var(--beige)',
+        'light-orange': 'var(--light-orange)',
+        orange: 'var(--orange)',
+        'dark-orange': 'var(--dark-orange)',
+        ink: 'var(--ink)',
+        ochre: {
+          DEFAULT: 'var(--ochre)',
+          dark: 'var(--ochre-dark)',
+        },
+        rule: 'var(--rule)',
+        quiet: 'var(--quiet)',
+        // Shadcn UI palette
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

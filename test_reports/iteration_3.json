@@ -1,0 +1,31 @@
+{
+  "summary": "Round 3 frontend-only verification of the single remaining fix (sticky navbar background when scrolled) plus a regression sweep on desktop (1920x1080) and mobile (390x844) against the public preview URL. VERIFIED FIXED: nav computed backgroundColor after scrolling 900px is rgba(250, 247, 242, 0.95) on Home, About and on mobile, with backdropFilter blur(12px), borderBottom 1px solid rgb(232,220,200) and boxShadow rgba(0,0,0,0.05) 0 1px 3px. At scrollY=0 it correctly returns to rgba(0,0,0,0) (transparent), and the 500ms CSS transition completes within ~600ms. Screenshots confirm the nav is opaque and page imagery no longer bleeds through behind the nav links. REGRESSION PASS: hero h1 renders ('A legal education,'), marquee band animates (visible in screenshot), About two-column layout + Practicum I Placement card + University Journey cards render, Practicum I /practicum-i/week/1 shows Monday 3rd August 2026 / Tuesday 4th August 2026 with journal + photo sections, Practicum II 8-week grid renders with no NaN text, Gallery exposes 5 file upload inputs, /practicum-i/week/99 redirects to /practicum-i with no 'Week 99'/NaN leakage, catch-all route /some-random-path renders the Home content (1216 chars), mobile slide-in menu panel has a solid rgb(250,247,242) background and clicking 'Gallery' navigates to /gallery. No console errors captured. NOTE: my first mobile reading of rgba(250,247,242,0.01) was a mid-transition sample, not a defect - re-measured and confirmed 0.95.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Practicum I / Practicum II week cards",
+        "issues": [
+          "Inconsistent week labelling carried over from earlier iterations: Practicum II cards show 'Week' + '01'..'08' while the Practicum I detail page header reads 'Week 01' but the index/breadcrumb reads 'WEEK 1 OF 4'. Cosmetic only."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Navigation.jsx now hardcodes the paper colour as rgba(250, 247, 242, 0.95) inline, duplicating the --paper token. Consider adding --paper-rgb: 250 247 242 in App.css and using rgba(var(--paper-rgb) / 0.95) so the theme stays single-sourced.",
+    "tailwind.config.js custom colors are still bare 'var(--x)', so any future 'bg-ochre/10' style alpha-modifier class will silently not be emitted. Define tokens as 'rgb(var(--x-rgb) / <alpha-value>)' to make alpha modifiers usable.",
+    "Nav links, hero heading and week cards still have no data-testid, forcing text/CSS selectors in automated tests."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend-only app)", "frontend": "100% - navbar fix verified, 0 regressions"},
+  "seed_data_creation": "None. No localStorage writes made in this round.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": false,
+  "test_credentials": "Not applicable - no auth in this app.",
+  "context_for_next_testing_agent": "All previously reported defects (text-quiet contrast, active ochre nav link, mobile menu solid panel, week param validation, 404 catch-all, Practicum II 'Day N' removal, and now the scrolled navbar background) are verified fixed. Only cosmetic week-label inconsistency and the tailwind alpha-token/data-testid code-quality notes remain open. When asserting nav background, wait >=600ms after scrolling for the 500ms transition to finish.",
+  "rca_of_the_issue": "Previous root cause: Tailwind could not emit 'bg-paper/95' because the color token was a bare var(--paper) without the <alpha-value> placeholder. The fix moves the background/backdrop-filter/border/shadow to an inline React style keyed off isScrolled, bypassing Tailwind's alpha-modifier limitation. Confirmed working on desktop and mobile."
+}

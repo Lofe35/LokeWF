@@ -8,8 +8,37 @@ const WeekDetailPage = ({ practicumType }) => {
   const { weekNumber } = useParams();
   const navigate = useNavigate();
   const week = parseInt(weekNumber);
+  const totalWeeksForType = practicumType === 'i' ? 4 : 8;
+
+  // Validate week number - redirect if invalid
+  useEffect(() => {
+    if (isNaN(week) || week < 1 || week > totalWeeksForType) {
+      navigate(practicumType === 'i' ? '/practicum-i' : '/practicum-ii', { replace: true });
+    }
+  }, [week, totalWeeksForType, practicumType, navigate]);
 
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  
+  // Calculate dates based on practicum type and week number
+  const getDayDate = (dayIndex) => {
+    if (practicumType === 'i') {
+      // Practicum I starts Monday 3 August 2026
+      const startDay = 3; // 3rd August 2026
+      const dayNum = startDay + (week - 1) * 7 + dayIndex;
+      const suffix = (n) => {
+        if (n >= 11 && n <= 13) return 'th';
+        switch (n % 10) {
+          case 1: return 'st';
+          case 2: return 'nd';
+          case 3: return 'rd';
+          default: return 'th';
+        }
+      };
+      return `${dayNum}${suffix(dayNum)} August 2026`;
+    }
+    // For Practicum II, use week number only (dates unknown)
+    return `Day ${dayIndex + 1}`;
+  };
   
   // Load saved entries from localStorage
   const storageKey = `practicum-${practicumType}-week-${week}`;
@@ -30,7 +59,11 @@ const WeekDetailPage = ({ practicumType }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (Object.keys(entries).length > 0 || Object.keys(images).length > 0) {
-        localStorage.setItem(storageKey, JSON.stringify({ entries, images }));
+        try {
+          localStorage.setItem(storageKey, JSON.stringify({ entries, images }));
+        } catch (e) {
+          console.warn('Storage quota exceeded. Some images may not be saved.');
+        }
       }
     }, 500);
     return () => clearTimeout(timer);
@@ -62,15 +95,24 @@ const WeekDetailPage = ({ practicumType }) => {
   };
 
   const handleSave = () => {
-    localStorage.setItem(storageKey, JSON.stringify({ entries, images }));
-    setSavedNotification(true);
-    setTimeout(() => setSavedNotification(false), 2000);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify({ entries, images }));
+      setSavedNotification(true);
+      setTimeout(() => setSavedNotification(false), 2000);
+    } catch (e) {
+      alert('Storage full. Please remove some photos to save.');
+    }
   };
 
   const practicumName = practicumType === 'i' ? 'Practicum I' : 'Practicum II';
   const backPath = practicumType === 'i' ? '/practicum-i' : '/practicum-ii';
-  const totalWeeks = practicumType === 'i' ? 4 : 8;
+  const totalWeeks = totalWeeksForType;
   const accentColor = practicumType === 'i' ? 'var(--ochre)' : 'var(--orange)';
+
+  // Early return if week is invalid to prevent rendering errors
+  if (isNaN(week) || week < 1 || week > totalWeeksForType) {
+    return null;
+  }
 
   return (
     <>
@@ -183,9 +225,11 @@ const WeekDetailPage = ({ practicumType }) => {
                         <h3 className="font-display font-bold text-2xl md:text-3xl" style={{ color: 'var(--ink)' }}>
                           {day}
                         </h3>
-                        <div className="font-body text-xs uppercase tracking-widest text-quiet">
-                          Day {index + 1} of Week {week}
-                        </div>
+                        {practicumType === 'i' && (
+                          <div className="font-body text-sm mt-1" style={{ color: 'var(--ochre)' }}>
+                            {getDayDate(index)}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

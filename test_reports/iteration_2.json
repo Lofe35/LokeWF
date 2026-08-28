@@ -1,0 +1,43 @@
+{
+  "summary": "Round 2 frontend-only retest of the 4 reported fixes plus regression pass on the previously working features (public preview URL, 1920x1080 desktop + 390x844 mobile). FIXED & VERIFIED: (a) text-quiet now resolves to rgb(139,125,107) (muted grey) - visual hierarchy restored; (b) active nav link on /about is ochre rgb(207,91,29) vs inactive rgb(139,125,107); (c) mobile slide-in menu panel now has a SOLID background rgb(250,247,242) and menu items are readable at 390x844, and clicking a menu item navigates correctly (Gallery -> /gallery); (d) WeekDetailPage route validation works - /practicum-i/week/99, /practicum-i/week/abc and /practicum-ii/week/50 all redirect (replace) to the practicum index with no 'Week NaN' / 'Week 99' / '689th August 2026' text; (e) catch-all 404 route renders the Home page for /some-random-path (hero present, body 1216 chars); (f) Practicum II /practicum-ii/week/3 no longer prints 'Day 1'..'Day 5' under weekday names; (g) Practicum I /practicum-i/week/1 still shows 3rd-7th August 2026. STILL BROKEN: the sticky navbar background remains fully transparent when scrolled (computed backgroundColor = rgba(0,0,0,0) after scrolling 800-900px on Home and About) because Tailwind cannot generate the 'bg-paper/95' opacity variant from a bare 'var(--paper)' color value - only the plain '.bg-paper { background-color: var(--paper); }' rule exists in the emitted CSS. Screenshot confirms the Practicum I court photo bleeds through behind the nav links. Regression: hero, marquee, Mahkamah Muar thumbnail (naturalWidth 640), contact footer (mailto/LinkedIn/wa.me hrefs correct), About layout + University Journey cards, gallery 5 upload inputs, journal autosave + 'Saved!' toast + reload persistence (Practicum I wk2 and Practicum II wk3) all PASS. No console errors (only benign WebGL perf warnings and one framer-motion scroll-container warning).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Navigation (sticky bar) - scrolled state",
+        "issue": "Nav is still transparent when scrolled. tailwind.config.js defines paper: 'var(--paper)', which Tailwind cannot combine with the /95 alpha modifier, so the class 'bg-paper/95' is never emitted (verified: only '.bg-paper { background-color: var(--paper) }' exists in the stylesheets; nav computed backgroundColor = rgba(0, 0, 0, 0), only backdrop-blur(12px) applies). Page imagery bleeds behind nav links. Fix: either use 'bg-paper' (no alpha) or register the token as an alpha-capable value, e.g. define --paper-rgb: 250 247 242 in App.css and paper: 'rgb(var(--paper-rgb) / <alpha-value>)', or set the background via inline style when isScrolled.",
+        "selector": "nav.fixed.top-0 (Navigation.jsx:34)",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "All pages",
+        "issues": [
+          "Same root cause as the nav bug applies to any other Tailwind alpha-modifier usage on the custom tokens (e.g. bg-ochre/10 style classes) - grep for '/<number>' on paper/ink/ochre/quiet classes; those rules will silently not be generated.",
+          "Practicum II week cards still label 'Week' + '01'..'08' while Practicum I cards render 'Week 1'..'Week 4' with date ranges - inconsistent labelling (carried over from iteration 1, cosmetic)."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix the scrolled navbar background: replace 'bg-paper/95' with a value Tailwind can actually emit (plain 'bg-paper', an inline style, or an <alpha-value>-capable rgb() token definition). This is the only remaining HIGH issue."
+  ],
+  "critical_code_review_comments": [
+    "tailwind.config.js custom colors are declared as bare 'var(--x)'. Tailwind 3 can only apply the '/opacity' modifier when the color is expressed with the <alpha-value> placeholder (e.g. 'rgb(var(--paper-rgb) / <alpha-value>)'). Any class like bg-paper/95 or bg-ochre/20 will be a silent no-op with the current config.",
+    "Config note: 'orange: var(--orange)' overrides Tailwind's default orange-50..900 scale; any orange-500 style class elsewhere would break. Verify none are used.",
+    "WeekDetailPage duplicates the invalid-week condition in the useEffect and in the early return - extract to a single 'isValidWeek' boolean.",
+    "WeekDetailPage.getDayDate still uses naive day arithmetic (startDay + (week-1)*7 + dayIndex); safe now only because validation caps week at 4, but a real Date object would be more robust.",
+    "Nav links, week cards and hero heading still lack data-testid, forcing text/CSS selectors in tests."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend-only app)", "frontend": "9 of 10 requested checks PASS; 1 HIGH issue (transparent scrolled navbar) remains; 0 regressions"},
+  "seed_data_creation": "Temporary localStorage journal entries practicum-i-week-2 (Monday) and practicum-ii-week-3 (Tuesday) for autosave/persistence checks; both removed at end of run.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "Not applicable - no auth in this app.",
+  "context_for_next_testing_agent": "Only open item: nav scrolled background. Verify with: scroll 900px then getComputedStyle(document.querySelector('nav')).backgroundColor != 'rgba(0, 0, 0, 0)'. Also confirm the emitted stylesheet contains a rule for the exact class used ('.bg-paper\\\\/95'). All other iteration-1 defects (text-quiet, active ochre nav link, mobile menu solid panel, week param validation, 404 catch-all, Practicum II Day N removal) are verified fixed. Regression suite covered: hero, marquee, thumbnail, contact links, about layout, gallery uploads, journal autosave/persistence.",
+  "rca_of_the_issue": "Tailwind's color-opacity modifier requires the color value to contain the <alpha-value> placeholder. Because the config maps paper -> 'var(--paper)', Tailwind cannot synthesise 'bg-paper/95' and drops the utility entirely, so the scrolled nav keeps its default transparent background. The plain '.bg-paper' used by the mobile menu works, which is why the mobile panel is now solid while the nav is not."
+}

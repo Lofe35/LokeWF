@@ -258,6 +258,61 @@ const HomePage = () => {
           </motion.div>
         </motion.div>
 
+        {/* Kinetic Marquee Section - VERY VISIBLE MOTION */}
+        <div className="py-16 md:py-24 overflow-hidden relative" style={{ background: 'var(--ink)' }}>
+          <motion.div
+            animate={{ x: ['0%', '-50%'] }}
+            transition={{ repeat: Infinity, duration: 30, ease: 'linear' }}
+            className="flex whitespace-nowrap"
+          >
+            {[...Array(2)].map((_, setIndex) => (
+              <div key={setIndex} className="flex items-center gap-16 pr-16">
+                {['Legal Education', 'Court Practice', 'Reflection', 'Growth', 'Discipline', 'Advocacy', 'Justice', 'Precision'].map((word, i) => (
+                  <React.Fragment key={i}>
+                    <span
+                      className="font-display font-black italic text-6xl md:text-8xl lg:text-9xl"
+                      style={{ color: i % 2 === 0 ? 'var(--paper)' : 'var(--ochre)' }}
+                    >
+                      {word}
+                    </span>
+                    <motion.span
+                      animate={{ rotate: 360 }}
+                      transition={{ repeat: Infinity, duration: 8, ease: 'linear' }}
+                      className="text-5xl"
+                      style={{ color: 'var(--ochre)' }}
+                    >
+                      ✦
+                    </motion.span>
+                  </React.Fragment>
+                ))}
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Second row reverse direction */}
+          <motion.div
+            animate={{ x: ['-50%', '0%'] }}
+            transition={{ repeat: Infinity, duration: 40, ease: 'linear' }}
+            className="flex whitespace-nowrap mt-8 opacity-40"
+          >
+            {[...Array(2)].map((_, setIndex) => (
+              <div key={setIndex} className="flex items-center gap-16 pr-16">
+                {['Mahkamah Tinggi Muar', 'August 2026', 'Practicum Journey', 'Four Weeks'].map((word, i) => (
+                  <React.Fragment key={i}>
+                    <span
+                      className="font-body text-3xl md:text-4xl uppercase tracking-widest"
+                      style={{ color: 'var(--lilac)', opacity: 0.7 }}
+                    >
+                      {word}
+                    </span>
+                    <span className="text-2xl" style={{ color: 'var(--ochre)' }}>·</span>
+                  </React.Fragment>
+                ))}
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
         {/* Animated Transition Line with wave effect */}
         <motion.div
           initial={{ scaleX: 0, opacity: 0 }}
@@ -336,11 +391,11 @@ const HomePage = () => {
                 }}
               >
                 {/* Court image thumbnail */}
-                <div className="mb-6 rounded-xl overflow-hidden">
-                  <img 
-                    src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/ea/48/kompleks-mahkamah-muar.jpg?w=600&h=-1&s=1"
+                <div className="mb-6 rounded-xl overflow-hidden h-40">
+                  <img
+                    src="https://customer-assets-lqy194kg.emergentagent.net/job_mahkamah-experience/artifacts/3qu75vc9_Muar%20High%20Court.jpg"
                     alt="Mahkamah Muar"
-                    className="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
                 

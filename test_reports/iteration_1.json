@@ -1,0 +1,77 @@
+{
+  "summary": "Frontend-only E2E testing of the Loke Wei Feng practicum e-portfolio (React SPA, localStorage persistence) on the public preview URL. All 19 requested feature/bug items were verified and PASS: Home hero 'A legal education, in practice.', animated marquee (verified actual x-translation), visible Mahkamah Muar thumbnail on the Practicum I card (naturalWidth 640, rendered 460x160), contact footer (Email/LinkedIn/WhatsApp with correct hrefs), About two-column layout (photo x=317 LEFT of intro x=862, image loaded), all 4 University Journey experience cards, achievement banner text, placement details (Muar High Court, Puan Suhaili binti Sapun), Practicum I with 4 week cards and ZERO week themes, court image, stats (4 Weeks/20 Days/Muar/Upcoming), Week 1 dates 3rd-7th August 2026, Week 2 dates 10th-14th, Week 4 24th/28th, journal textareas + Add Photo (5 each), Save button + 'Saved!' toast + localStorage persistence after reload, Practicum II 8 week cards (no themes) with working journal autosave, Gallery 5 categories each with an 'Add Photos' upload control, nav navigation (desktop + mobile menu) and page transitions. Zero console/page errors observed. However, a real CSS defect was found: several custom Tailwind color utilities used across the app are NOT defined in tailwind.config.js, so they are dead classes - most visibly the navbar/mobile-menu background is fully transparent (computed rgba(0,0,0,0)).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Navigation (mobile menu panel)",
+        "issue": "Mobile slide-in menu uses class 'bg-paper' which is undefined in tailwind.config.js -> computed backgroundColor = rgba(0,0,0,0). The menu items render directly on top of page content and are unreadable (verified at 390x844: 'HOME/ABOUT/PRACTICUM I...' overlapping the 'A considered archive...' paragraph). Links are still clickable and navigation works.",
+        "selector": "div.fixed.top-20.right-0 (Navigation.jsx:91)",
+        "priority": "HIGH"
+      },
+      {
+        "component": "Navigation (sticky bar)",
+        "issue": "Scrolled state uses 'bg-paper/95' which is undefined -> nav stays transparent while scrolling; page imagery (e.g. Practicum I card court photo on Home) bleeds through behind the nav links. Fix: add paper/ink/ochre/quiet/orange/lilac/beige/rule colors to tailwind.config.js theme.extend.colors mapped to the CSS vars in App.css.",
+        "selector": "nav.fixed.top-0 (Navigation.jsx:34)",
+        "priority": "HIGH"
+      },
+      {
+        "component": "WeekDetailPage - route param validation",
+        "issue": "Invalid week params are not validated. /practicum-i/week/99 renders 'WEEK 99 OF 4' with day date '689th August 2026'; /practicum-i/week/abc renders 'Week NaN' and 'NaNth August 2026'. Should redirect/404 when week is not 1..totalWeeks.",
+        "selector": "WeekDetailPage.jsx:10 parseInt(weekNumber)",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "App.js router",
+        "issue": "No catch-all 404 route. /unknown-route renders only the navbar on a blank page (body text length 47 chars).",
+        "selector": "Routes (App.js:41-47)",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "All pages",
+        "issues": [
+          "'text-quiet' (used ~60 times) is undefined in tailwind config; all secondary/muted copy renders in full ink rgb(44,36,22) instead of rgb(139,125,107) - visual hierarchy between headings and supporting copy is lost (contrast is still adequate, so readability is fine).",
+          "'text-ochre' undefined: the active nav link is NOT highlighted (active 'About' color rgb(44,36,22) == inactive 'Gallery' color). Users get no current-page indication.",
+          "'hover:bg-ochre / hover:text-paper / hover:border-ochre' on the Email/LinkedIn/WhatsApp contact buttons are undefined -> no hover fill effect (only the framer-motion scale works).",
+          "'bg-ochre-dark' on the Home 'Read the journal' button's sliding hover overlay is undefined -> the intended wipe animation is invisible."
+        ]
+      },
+      {
+        "screen": "Practicum II",
+        "issues": [
+          "Week cards render 'Week' + '01'..'08' only, while Practicum I cards render the literal 'Week 1'..'Week 4' plus date ranges - inconsistent labelling between the two practicum pages.",
+          "PracticumIIPage.jsx:10 still builds an unused 'theme: Week N Practice' field (dead code left over from theme removal).",
+          "Practicum II week subpages show 'Day 1'..'Day 5' under each weekday instead of a date (expected, dates unknown) - consider hiding the line entirely rather than showing a redundant 'Day N'."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Add the portfolio palette to tailwind.config.js theme.extend.colors (paper, ink, ochre, ochre-dark, quiet, orange, light-orange, beige, rule, lilac -> var(--...)) so bg-paper/95, text-quiet, text-ochre, text-ink and the hover: variants actually apply. This single fix resolves the transparent navbar, the unreadable mobile menu, missing muted text hierarchy, missing active-nav highlight and dead hover effects.",
+    "Validate the :weekNumber route param in WeekDetailPage (redirect to the practicum index when NaN or out of 1..totalWeeks) to stop 'Week NaN' / '689th August 2026'.",
+    "Add a catch-all 404 route in App.js.",
+    "Remove the unused 'theme' field in PracticumIIPage weeks array and align Practicum II card labels with Practicum I ('Week N').",
+    "Optional cleanup: unused legacy components (HeroSection, AboutSection, PracticumISection, PracticumIISection, GallerySection) and unused imports (useNavigate/ImageIcon in WeekDetailPage, Plus in GalleryPage) are dead code."
+  ],
+  "critical_code_review_comments": [
+    "tailwind.config.js theme.extend.colors only contains the shadcn hsl(var(--...)) tokens; the bespoke design tokens defined in App.css (--paper, --ink, --ochre, --quiet, ...) were never registered, so every Tailwind class referencing them is silently a no-op. Verified via getComputedStyle in the browser.",
+    "WeekDetailPage.jsx getDayDate does naive arithmetic (startDay + (week-1)*7 + dayIndex) - correct for weeks 1-4 in August 2026 but overflows the month for any other week value; use a real Date to be safe.",
+    "Add data-testid to the nav links, week cards, hero heading and contact buttons - currently only journal textareas, upload inputs, save button and gallery upload labels have them, forcing text-based selectors in tests.",
+    "GalleryPage/WeekDetailPage store base64 images in localStorage with no size guard; a few photos will exceed the ~5MB quota and throw an uncaught QuotaExceededError on save (no try/catch around localStorage.setItem)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend-only app, no backend endpoints)", "frontend": "100% of the 19 requested feature checks passed; 4 additional UI/robustness defects found"},
+  "seed_data_creation": "Temporary localStorage journal entries (practicum-i-week-1 Monday, practicum-ii-week-3 Tuesday) created to verify autosave/persistence; both removed at end of testing.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "Not applicable - no auth in this app; /app/memory/test_credentials.md not required.",
+  "context_for_next_testing_agent": "All user-requested fixes (Home Practicum I thumbnail, About photo-left/intro-right + University Journey section, removed week themes on Practicum I, day dates on week subpages) are verified working on https://mahkamah-experience.preview.emergentagent.com. Remaining open items are the undefined Tailwind color utilities (transparent navbar + unreadable mobile menu at 390px), missing week-param validation and missing 404 route. When retesting, check getComputedStyle(nav).backgroundColor != 'rgba(0, 0, 0, 0)' after scrolling and the mobile menu panel background at 390x844.",
+  "rca_of_the_issue": "Root cause of the navbar/mobile-menu transparency and the missing muted text styling: the project defines its palette as raw CSS custom properties in App.css (:root { --paper, --ink, --ochre, --quiet ... }) but never registers those names in tailwind.config.js theme.extend.colors. Tailwind therefore never generates .bg-paper/95, .text-quiet, .text-ochre, .text-ink, .bg-ochre-dark or their hover: variants, so the class names are present in the DOM but resolve to nothing (verified: nav computed backgroundColor rgba(0,0,0,0); text-quiet computed color rgb(44,36,22)). Reproduction: open the site at 390x844, scroll ~900px, tap the hamburger - the menu text renders over the page content. Mitigation: register the tokens in tailwind.config.js (colors: { paper: 'var(--paper)', ink: 'var(--ink)', ochre: { DEFAULT: 'var(--ochre)', dark: 'var(--ochre-dark)' }, quiet: 'var(--quiet)', ... }) or replace those classes with inline styles as the rest of the codebase already does."
+}

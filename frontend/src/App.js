@@ -45,6 +45,7 @@ const AnimatedRoutes = () => {
         <Route path="/practicum-i/week/:weekNumber" element={<PageWrapper><WeekDetailPage practicumType="i" /></PageWrapper>} />
         <Route path="/practicum-ii/week/:weekNumber" element={<PageWrapper><WeekDetailPage practicumType="ii" /></PageWrapper>} />
         <Route path="/gallery" element={<PageWrapper><GalleryPage /></PageWrapper>} />
+        <Route path="*" element={<PageWrapper><HomePage /></PageWrapper>} />
       </Routes>
     </AnimatePresence>
   );
