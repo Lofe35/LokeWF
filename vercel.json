@@ -1,16 +1,16 @@
 {
     "services": {
         "frontend": {
-            "root": "frontend",
-            "framework": "create-react-app"
+            "root": "frontend"
         },
         "backend": {
-            "root": "backend"
+            "root": "backend",
+            "entrypoint": "main.py"
         }
     },
     "rewrites": [
         {
-            "source": "/api(/.*)?",
+            "source": "/api/(.*)",
             "destination": {
                 "type": "service",
                 "service": "backend"
