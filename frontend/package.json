@@ -68,7 +68,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "NODE_OPTIONS=--openssl-legacy-provider craco build",
+    "build": "react-scripts build",
     "test": "craco test"
   },
   "browserslist": {
