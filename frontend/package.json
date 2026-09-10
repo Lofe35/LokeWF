@@ -1,6 +1,6 @@
 {
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "name": "frontend",
   "version": "0.1.0",
@@ -68,7 +68,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "node --openssl-legacy-provider node_modules/.bin/craco build",
     "test": "craco test"
   },
   "browserslist": {
