@@ -1,29 +1,14 @@
 {
-  "services": {
-    "frontend": {
-      "root": "frontend",
-      "framework": "create-react-app",
-      "installCommand": "npm install --legacy-peer-deps"
-    },
-    "backend": {
-      "root": "backend",
-      "entrypoint": "server.py"
-    }
-  },
+  "buildCommand": "cd frontend && npm install --legacy-peer-deps && npm run build",
+  "outputDirectory": "frontend/build",
   "rewrites": [
     {
       "source": "/api/(.*)?",
-      "destination": {
-        "type": "service",
-        "service": "backend"
-      }
+      "destination": "/api/index"
     },
     {
       "source": "/(.*)",
-      "destination": {
-        "type": "service",
-        "service": "frontend"
-      }
+      "destination": "/index.html"
     }
   ]
 }
